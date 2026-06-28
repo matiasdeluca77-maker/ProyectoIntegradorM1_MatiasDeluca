@@ -94,4 +94,32 @@ footer {
     padding: 16px;
     font-size: 0.85rem;
     color: #999;
+}/* ===== CONTENEDOR PALETA ===== */
+#contenedor-paleta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+/* ===== TARJETAS DE COLOR ===== */
+.tarjeta-color {
+    flex: 1 1 120px;
+    min-height: 120px;
+    border-radius: 10px;
+    display: flex;
+    align-items: flex-end;
+    padding: 8px;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.tarjeta-color p {
+    background-color: rgba(0,0,0,0.4);
+    color: white;
+    font-size: 0.75rem;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-family: monospace;
+    width: 100%;
+    text-align: center;
 }
