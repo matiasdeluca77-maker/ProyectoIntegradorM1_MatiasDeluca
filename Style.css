@@ -122,4 +122,64 @@ footer {
     font-family: monospace;
     width: 100%;
     text-align: center;
+}/* ===== TOAST ===== */
+#toast {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #2d2d2d;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+#toast.visible {
+    opacity: 1;
+}
+});
+// ===== GUARDAR PALETA =====
+const btnGuardar = document.getElementById('btn-guardar');
+
+btnGuardar.addEventListener('click', function() {
+    const tarjetas = document.querySelectorAll('.tarjeta-color');
+    
+    if (tarjetas.length === 0) {
+        mostrarToast('¡Generá una paleta primero!');
+        return;
+    }
+
+    const colores = [];
+    tarjetas.forEach(function(tarjeta) {
+        colores.push(tarjeta.querySelector('p').textContent);
+    });
+
+    const paletas = JSON.parse(localStorage.getItem('paletas') || '[]');
+    paletas.push(colores);
+    localStorage.setItem('paletas', JSON.stringify(paletas));
+
+    mostrarToast('¡Paleta guardada!');
+});/* ===== ANIMACIONES ===== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.tarjeta-color {
+    animation: fadeIn 0.3s ease forwards;
+}
+
+button:active {
+    transform: scale(0.96);
+    transition: transform 0.1s ease;
 }

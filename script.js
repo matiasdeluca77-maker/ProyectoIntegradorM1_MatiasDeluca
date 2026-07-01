@@ -14,8 +14,9 @@ function generarColorHex() {
 }
 
 // ===== MOSTRAR TOAST =====
-function mostrarToast() {
+function mostrarToast(mensaje) {
     const toast = document.getElementById('toast');
+    toast.textContent = mensaje;
     toast.classList.add('visible');
     setTimeout(function() {
         toast.classList.remove('visible');
@@ -33,6 +34,12 @@ function renderizarPaleta(cantidad) {
         const codigo = document.createElement('p');
         codigo.textContent = color;
         tarjeta.appendChild(codigo);
+
+        tarjeta.addEventListener('click', function() {
+            navigator.clipboard.writeText(color);
+            mostrarToast('¡Copiado: ' + color + '!');
+        });
+
         contenedorPaleta.appendChild(tarjeta);
     }
 }
@@ -41,5 +48,28 @@ function renderizarPaleta(cantidad) {
 btnGenerar.addEventListener('click', function() {
     const cantidad = parseInt(selectTamano.value);
     renderizarPaleta(cantidad);
-    mostrarToast();
+    mostrarToast('¡Paleta generada!');
 });
+// ===== GUARDAR PALETA =====
+const btnGuardar = document.getElementById('btn-guardar');
+
+btnGuardar.addEventListener('click', function() {
+    const tarjetas = document.querySelectorAll('.tarjeta-color');
+    
+    if (tarjetas.length === 0) {
+        mostrarToast('¡Generá una paleta primero!');
+        return;
+    }
+
+    const colores = [];
+    tarjetas.forEach(function(tarjeta) {
+        colores.push(tarjeta.querySelector('p').textContent);
+    });
+
+    const paletas = JSON.parse(localStorage.getItem('paletas') || '[]');
+    paletas.push(colores);
+    localStorage.setItem('paletas', JSON.stringify(paletas));
+
+    mostrarToast('¡Paleta guardada!');
+});
+
