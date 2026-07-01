@@ -3,14 +3,25 @@ const btnGenerar = document.getElementById('btn-generar');
 const selectTamano = document.getElementById('tamano-paleta');
 const contenedorPaleta = document.getElementById('contenedor-paleta');
 
-// ===== GENERAR COLOR HEX ALEATORIO =====
-function generarColorHex() {
-    const letras = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-        color += letras[Math.floor(Math.random() * 16)];
-    }
-    return color;
+// ===== GENERAR COLOR HSL ALEATORIO =====
+function generarColorHSL() {
+    const h = Math.floor(Math.random() * 360);
+    const s = Math.floor(Math.random() * 50) + 50;
+    const l = Math.floor(Math.random() * 30) + 35;
+    return { h, s, l };
+}
+
+// ===== CONVERTIR HSL A HEX =====
+function hslAHex(h, s, l) {
+    s /= 100;
+    l /= 100;
+    const a = s * Math.min(l, 1 - l);
+    const f = n => {
+        const k = (n + h / 30) % 12;
+        const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+        return Math.round(255 * color).toString(16).padStart(2, '0');
+    };
+    return `#${f(0)}${f(8)}${f(4)}`.toUpperCase();
 }
 
 // ===== MOSTRAR TOAST =====
@@ -27,17 +38,28 @@ function mostrarToast(mensaje) {
 function renderizarPaleta(cantidad) {
     contenedorPaleta.innerHTML = '';
     for (let i = 0; i < cantidad; i++) {
-        const color = generarColorHex();
+        const { h, s, l } = generarColorHSL();
+        const hex = hslAHex(h, s, l);
+        const hslTexto = `hsl(${h}, ${s}%, ${l}%)`;
+
         const tarjeta = document.createElement('div');
         tarjeta.classList.add('tarjeta-color');
-        tarjeta.style.backgroundColor = color;
-        const codigo = document.createElement('p');
-        codigo.textContent = color;
-        tarjeta.appendChild(codigo);
+        tarjeta.style.backgroundColor = hslTexto;
+
+        const codigoHex = document.createElement('p');
+        codigoHex.textContent = hex;
+        codigoHex.classList.add('codigo-hex');
+
+        const codigoHsl = document.createElement('p');
+        codigoHsl.textContent = hslTexto;
+        codigoHsl.classList.add('codigo-hsl');
+
+        tarjeta.appendChild(codigoHex);
+        tarjeta.appendChild(codigoHsl);
 
         tarjeta.addEventListener('click', function() {
-            navigator.clipboard.writeText(color);
-            mostrarToast('¡Copiado: ' + color + '!');
+            navigator.clipboard.writeText(hex);
+            mostrarToast('¡Copiado: ' + hex + '!');
         });
 
         contenedorPaleta.appendChild(tarjeta);
@@ -50,6 +72,7 @@ btnGenerar.addEventListener('click', function() {
     renderizarPaleta(cantidad);
     mostrarToast('¡Paleta generada!');
 });
+
 // ===== GUARDAR PALETA =====
 const btnGuardar = document.getElementById('btn-guardar');
 
@@ -72,4 +95,3 @@ btnGuardar.addEventListener('click', function() {
 
     mostrarToast('¡Paleta guardada!');
 });
-
